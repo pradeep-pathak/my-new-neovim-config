@@ -5,14 +5,14 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  })
+    vim.fn.system({
+        "git",
+        "clone",
+        "--filter=blob:none",
+        "https://github.com/folke/lazy.nvim.git",
+        "--branch=stable",
+        lazypath,
+    })
 end
 
 vim.opt.rtp:prepend(lazypath)
@@ -23,72 +23,101 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 
-  -- colorscheme
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    priority = 1000
-  },
+    -- colorscheme
+    {
+        "catppuccin/nvim",
+        name = "catppuccin",
+        priority = 1000
+    },
 
-  -- lualine
-  {
-    "nvim-lualine/lualine.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" }
-  },
+    --- better syntax highlighting & indentation
+    {
+        "nvim-treesitter/nvim-treesitter",
+        lazy = false,
+        build = ":TSUpdate",
+    },
+    {
+        "lukas-reineke/indent-blankline.nvim",
+        main = "ibl",
+        config = function()
+            require("ibl").setup({
+                exclude = {
+                    filetypes = {
+                        "dashboard",
+                        "NvimTree",
+                    }
+                }
+            })
+        end
+    },
 
-  -- bufferline
-  {
-  "akinsho/bufferline.nvim",
-  version = "*",
-  dependencies = { "nvim-tree/nvim-web-devicons" }
-},
+    -- lualine
+    {
+        "nvim-lualine/lualine.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" }
+    },
 
-  -- telescope
-  {
-    "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" }
-  },
+    -- bufferline
+    {
+        "akinsho/bufferline.nvim",
+        version = "*",
+        dependencies = { "nvim-tree/nvim-web-devicons" }
+    },
 
-  -- git signs
-  {
-    "lewis6991/gitsigns.nvim"
-  },
+    -- telescope
+    {
+        "nvim-telescope/telescope.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" }
+    },
 
-  -- file tree
-  {
-    "nvim-tree/nvim-tree.lua",
-    dependencies = { "nvim-tree/nvim-web-devicons" }
-  },
-  
-  -- dashboard
-  {
-    "nvimdev/dashboard-nvim",
-    event = "VimEnter",
-    dependencies = { "nvim-tree/nvim-web-devicons" }
-  },
+    -- git signs
+    {
+        "lewis6991/gitsigns.nvim"
+    },
 
-  -- LSP
-  {
-    "neovim/nvim-lspconfig",
-  },
-  
-  {
-    "williamboman/mason.nvim",
-    build = ":MasonUpdate",
-  },
-  
-  {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = { "williamboman/mason.nvim" },
-  },
+    -- file tree
+    {
+        "nvim-tree/nvim-tree.lua",
+        dependencies = { "nvim-tree/nvim-web-devicons" }
+    },
 
-  {
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "L3MON4D3/LuaSnip"
-    }
-  }
+    -- dashboard
+    {
+        "nvimdev/dashboard-nvim",
+        event = "VimEnter",
+        dependencies = { "nvim-tree/nvim-web-devicons" }
+    },
+
+    -- LSP
+    {
+        "neovim/nvim-lspconfig",
+    },
+
+    {
+        "williamboman/mason.nvim",
+        build = ":MasonUpdate",
+    },
+
+    {
+        "williamboman/mason-lspconfig.nvim",
+        dependencies = { "williamboman/mason.nvim" },
+    },
+
+    {
+        "hrsh7th/nvim-cmp",
+        dependencies = {
+            "hrsh7th/cmp-nvim-lsp",
+            "L3MON4D3/LuaSnip"
+        }
+    },
+
+    {
+        "nvimdev/lspsaga.nvim",
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+            "nvim-tree/nvim-web-devicons"
+        }
+    },
 
 })
 
@@ -102,6 +131,12 @@ vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 
 vim.g.mapleader = " "
+
+-- indentation
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.smartindent = true
 
 -- Enable persistent undo history
 vim.opt.undofile = true
@@ -134,7 +169,7 @@ vim.keymap.set("n", "<C-l>", "<C-w>l")
 -- ======================
 
 require("catppuccin").setup({
-  flavour = "mocha"
+    flavour = "mocha"
 })
 
 vim.cmd.colorscheme("catppuccin")
@@ -145,11 +180,11 @@ vim.cmd.colorscheme("catppuccin")
 -- ======================
 
 require("lualine").setup({
-  options = {
-    theme = "auto",
-    section_separators = "",
-    component_separators = "|"
-  }
+    options = {
+        theme = "auto",
+        section_separators = "",
+        component_separators = "|"
+    }
 })
 
 -- ======================
@@ -157,20 +192,20 @@ require("lualine").setup({
 -- ======================
 
 require("bufferline").setup({
-  options = {
-    mode = "buffers",
-    diagnostics = "nvim_lsp",
-    separator_style = "slant",
+    options = {
+        mode = "buffers",
+        diagnostics = "nvim_lsp",
+        separator_style = "slant",
 
-    offsets = {
-      {
-        filetype = "NvimTree",
-        text = "File Explorer",
-        highlight = "Directory",
-        text_align = "left"
-      }
+        offsets = {
+            {
+                filetype = "NvimTree",
+                text = "File Explorer",
+                highlight = "Directory",
+                text_align = "left"
+            }
+        }
     }
-  }
 })
 
 -- ======================
@@ -205,34 +240,34 @@ vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { silent = true })
 require("dashboard").setup({
     theme = 'hyper',
     config = {
-      week_header = {
-       enable = true,
-      },
-      shortcut = {
-        { desc = '󰊳 Update', group = '@property', action = 'Lazy update', key = 'u' },
-        {
-          icon = ' ',
-          icon_hl = '@variable',
-          desc = 'Files',
-          group = 'Label',
-          action = 'Telescope find_files',
-          key = 'f',
+        week_header = {
+            enable = true,
         },
-        {
-          desc = ' Apps',
-          group = 'DiagnosticHint',
-          action = 'Telescope app',
-          key = 'a',
+        shortcut = {
+            { desc = '󰊳 Update', group = '@property', action = 'Lazy update', key = 'u' },
+            {
+                icon = ' ',
+                icon_hl = '@variable',
+                desc = 'Files',
+                group = 'Label',
+                action = 'Telescope find_files',
+                key = 'f',
+            },
+            {
+                desc = ' Apps',
+                group = 'DiagnosticHint',
+                action = 'Telescope app',
+                key = 'a',
+            },
+            {
+                desc = ' dotfiles',
+                group = 'Number',
+                action = 'Telescope dotfiles',
+                key = 'd',
+            },
         },
-        {
-          desc = ' dotfiles',
-          group = 'Number',
-          action = 'Telescope dotfiles',
-          key = 'd',
-        },
-      },
     },
-  })
+})
 
 -- ======================
 -- mason
@@ -241,7 +276,7 @@ require("dashboard").setup({
 require("mason").setup()
 
 require("mason-lspconfig").setup({
-  ensure_installed = { "lua_ls", "gopls" }
+    ensure_installed = { "lua_ls", "gopls" }
 })
 
 
@@ -251,13 +286,13 @@ require("mason-lspconfig").setup({
 
 -- lua
 vim.lsp.config("lua_ls", {
-  settings = {
-    Lua = {
-      diagnostics = {
-        globals = { "vim" }
-      }
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { "vim" }
+            }
+        }
     }
-  }
 })
 
 -- go
@@ -274,23 +309,30 @@ vim.lsp.enable("gopls")
 local cmp = require("cmp")
 
 cmp.setup({
-  sources = {
-    { name = "nvim_lsp" }
-  },
+    sources = {
+        { name = "nvim_lsp" }
+    },
 
-  mapping = cmp.mapping.preset.insert({
-    ["<C-Space>"] = cmp.mapping.complete(),
-    ["<CR>"] = cmp.mapping.confirm({ select = true })
-  })
+    mapping = cmp.mapping.preset.insert({
+        ["<C-Space>"] = cmp.mapping.complete(),
+        ["<CR>"] = cmp.mapping.confirm({ select = true }),
+        ["<Tab>"] = cmp.mapping.select_next_item(),
+        ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+    }),
 })
+
+-- ======================
+-- lspsaga
+-- ======================
+
+require("lspsaga").setup()
 
 
 -- ======================
 -- Keybinds for LSP
 -- ======================
 
-vim.keymap.set("n", "gd", vim.lsp.buf.definition)
-vim.keymap.set("n", "K", vim.lsp.buf.hover)
-vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename)
-vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action)
-
+vim.keymap.set("n", "gd", "<cmd>Lspsaga goto_definition<CR>")
+vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>")
+vim.keymap.set("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>")
+vim.keymap.set("n", "<leader>rn", "<cmd>Lspsaga rename<CR>")
